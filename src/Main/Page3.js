@@ -1,26 +1,31 @@
 import React from 'react'
 import axios from 'axios'
 
-class Page2 extends React.Component {
+class Page3 extends React.Component {
 
     constructor(props) { 
         super(props);
         this.state = {
-            data_product:[],
+            url:"",
         }
 
         this.getAllData = this.getAllData.bind(this);
     }
 
     async componentDidMount(){
-        this.getAllData();
+        const state = this.props.location.state;
+        if(state){
+            this.setState({url:state.url}, ()=>this.getDetailData())
+        }
     }
 
-    getAllData(){
+    getDetailData(){
         var self = this;
-        axios.get(global.Server+'data', 
+        axios.get(global.Server+'data/detail', 
         { 
-            params:{},
+            params:{
+                url:self.state.url
+            },
         }
         )
         .then(function (response) {
@@ -75,4 +80,4 @@ class Page2 extends React.Component {
     }
 }
 
-export default Page2
+export default Page3

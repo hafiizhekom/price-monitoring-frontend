@@ -8,13 +8,40 @@ class Page1 extends React.Component {
             textUrl:""
         }
         this.handleInputText = this.handleInputText.bind(this);
+        this.handleSubmitButton = this.handleSubmitButton.bind(this);
     }
+
+    setUrl(){
+        var self = this;
+        axios.post(global.Server+'data', 
+        {
+            url:self.state.textUrl
+        }
+        , 
+        {
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+            },
+        })
+        .then(response => response.data)
+        .then(responseJson => {
+            
+            if(responseJson.status===true){
+                alert("Sucess"); 
+                this.props.history.push('page/3', {url:this.state.textUrl});
+            }else{
+                alert("Fail"); 
+            }
+        })
+        }
 
     handleInputText(e){
         this.setState({ textUrl:e.target.value})
     }
 
     handleSubmitButton(){
+        this.setUrl();
         
     }
     
