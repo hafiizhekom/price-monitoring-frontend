@@ -1,11 +1,13 @@
 import React from 'react'
+import axios from 'axios'
 
 class Page1 extends React.Component {
 
     constructor(props) { 
         super(props);
         this.state = {
-            textUrl:""
+            textUrl:"",
+            buttonEnabled:true
         }
         this.handleInputText = this.handleInputText.bind(this);
         this.handleSubmitButton = this.handleSubmitButton.bind(this);
@@ -13,36 +15,36 @@ class Page1 extends React.Component {
 
     setUrl(){
         var self = this;
-        axios.post(global.Server+'data', 
-        {
-            url:self.state.textUrl
-        }
-        , 
-        {
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json'
-            },
+
+        var bodyFormData = new FormData();
+        bodyFormData.set('url', self.state.textUrl);
+
+        axios({
+            method: 'post',
+            url: global.Server+"data",
+            data: bodyFormData,
+            headers: {'Content-Type': 'multipart/form-data' }
         })
-        .then(response => response.data)
-        .then(responseJson => {
-            
-            if(responseJson.status===true){
-                alert("Sucess"); 
-                this.props.history.push('page/3', {url:this.state.textUrl});
+        .then(function (response) {
+            //handle success
+            if(response.data.response){
+                alert("Success");
+                self.setState({buttonEnabled:!self.state.buttonEnabled})
+                self.props.history.push('3', {url:self.state.textUrl});
             }else{
-                alert("Fail"); 
+                self.setState({buttonEnabled:!self.state.buttonEnabled})
+                alert("Url already submited");
             }
         })
-        }
+    }
 
     handleInputText(e){
         this.setState({ textUrl:e.target.value})
     }
 
-    handleSubmitButton(){
+    handleSubmitButton(e){
+        this.setState({buttonEnabled:!this.state.buttonEnabled})
         this.setUrl();
-        
     }
     
 
@@ -54,7 +56,7 @@ class Page1 extends React.Component {
                         <label>Url: </label>
                         <input type="text" className="form-control" onChange={this.handleInputText}/>
                     </div>
-                    <button className="btn btn-primary float-right">Submit</button>
+                    <button className="btn btn-primary float-right" type="button" disabled={!this.state.buttonEnabled} onClick={this.handleSubmitButton}>Submit</button>
                 </form>
             </div>
 

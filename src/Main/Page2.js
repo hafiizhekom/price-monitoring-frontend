@@ -9,7 +9,8 @@ class Page2 extends React.Component {
             data_product:[],
         }
 
-        this.getAllData = this.getAllData.bind(this);
+        this.handleViewButton = this.handleViewButton.bind(this);
+
     }
 
     async componentDidMount(){
@@ -37,6 +38,10 @@ class Page2 extends React.Component {
         })
     }
 
+    handleViewButton(e){
+        this.props.history.push('3', {url:e.target.value});
+    }
+
     render(){
         return(
             <div className="container" style={{marginTop:20}}>
@@ -48,6 +53,7 @@ class Page2 extends React.Component {
                             <th>Image</th>
                             <th>Description</th>
                             <th>Last Price</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -59,13 +65,14 @@ class Page2 extends React.Component {
                                     <tr key={key}>
                                         <td>{item.url}</td>
                                         <td>{item.detail.title}</td>
-                                        <td><img src={item.detail.image}/></td>
+                                        <td><img src={item.detail.image} alt=""/></td>
                                         <td>{item.detail.description}</td>
                                         <td>{item.detail.price}</td>
+                                        <td><button className="btn btn-primary" value={item.url} onClick={this.handleViewButton}>View</button></td>
                                     </tr>)
                             })
                             :
-                            <tr><td colspan="5" className="text-center">Tidak ada data</td></tr>
+                            <tr><td colspan="6" className="text-center">Please wait</td></tr>
                         }
                     </tbody>
                 </table>
